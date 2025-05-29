@@ -1,7 +1,7 @@
 import React from 'react';
 import { SheetComponent } from '@antv/s2-react';
 import type { S2DataConfig } from '@antv/s2';
-import '@antv/s2-react/dist/style.min.css';
+import '@antv/s2-react/dist/s2-react.min.css';
 
 // Generate sample data with 700 rows and 6 columns
 const generateData = () => {
@@ -22,12 +22,12 @@ const generateData = () => {
 
 const DataTable: React.FC = () => {
   const data = generateData();
+  console.log(data);
 
   const s2DataConfig: S2DataConfig = {
     fields: {
-      rows: ['department', 'city'],
-      columns: ['name'],
-      values: ['salary', 'age'],
+      columns: ['name', 'age', 'city', 'salary', 'department'],
+      values: [],
     },
     data,
     meta: [
@@ -47,17 +47,20 @@ const DataTable: React.FC = () => {
   const s2Options = {
     width: 1200,
     height: 800,
-    showSeriesNumber: true,
-    pagination: {
+    seriesNumber: {
+      enable: true,
+    },
+   /*  pagination: {
       pageSize: 50,
       current: 1,
-    },
+    }, */
   };
 
   return (
     <div style={{ padding: '20px' }}>
       <h1>Employee Data Table</h1>
       <SheetComponent
+        sheetType="table"
         dataCfg={s2DataConfig}
         options={s2Options}
       />
