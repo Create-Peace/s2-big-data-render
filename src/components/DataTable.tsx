@@ -45,8 +45,8 @@ const DataTable: React.FC = () => {
   };
 
   const s2Options = {
-    width: 1200,
-    height: 800,
+    width: 600,
+    height: 80000,
     seriesNumber: {
       enable: true,
     },
