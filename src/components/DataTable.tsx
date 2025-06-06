@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { SheetComponent } from '@antv/s2-react';
 import type { S2DataConfig } from '@antv/s2';
 import '@antv/s2-react/dist/s2-react.min.css';
@@ -22,16 +22,27 @@ const generateData = () => {
 
 const DataTable: React.FC = () => {
   const data = generateData();
-  const [tableWidth, setTableWidth] = useState(window.innerWidth - 80); // 减去padding的宽度
+  const [tableWidth, setTableWidth] = useState(window.innerWidth - 80);
+  const [key, setKey] = useState(0); // 用于强制重新渲染表格
+  const s2Ref = useRef<any>(null);
 
   useEffect(() => {
     const handleResize = () => {
+      // 销毁旧的表格实例
+      if (s2Ref.current) {
+        s2Ref.current.destroy();
+      }
       setTableWidth(window.innerWidth - 80);
+      setKey(prev => prev + 1); // 强制重新渲染表格
     };
 
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
+      // 组件卸载时销毁表格实例
+      if (s2Ref.current) {
+        s2Ref.current.destroy();
+      }
     };
   }, []);
 
@@ -66,6 +77,8 @@ const DataTable: React.FC = () => {
   return (
     <div style={{ padding: '20px' }}>
       <SheetComponent
+        key={key}
+        ref={s2Ref}
         sheetType="table"
         dataCfg={s2DataConfig}
         options={s2Options}
