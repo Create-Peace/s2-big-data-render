@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { SheetComponent } from '@antv/s2-react';
 import type { S2DataConfig } from '@antv/s2';
 import '@antv/s2-react/dist/s2-react.min.css';
@@ -22,7 +22,18 @@ const generateData = () => {
 
 const DataTable: React.FC = () => {
   const data = generateData();
-  console.log(data);
+  const [tableWidth, setTableWidth] = useState(window.innerWidth - 80); // 减去padding的宽度
+
+  useEffect(() => {
+    const handleResize = () => {
+      setTableWidth(window.innerWidth - 80);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const s2DataConfig: S2DataConfig = {
     fields: {
@@ -45,20 +56,15 @@ const DataTable: React.FC = () => {
   };
 
   const s2Options = {
-    width: 600,
-    height: 80000,
+    width: tableWidth,
+    height: 600,
     seriesNumber: {
       enable: true,
     },
-   /*  pagination: {
-      pageSize: 50,
-      current: 1,
-    }, */
   };
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Employee Data Table</h1>
       <SheetComponent
         sheetType="table"
         dataCfg={s2DataConfig}
